@@ -4,18 +4,19 @@ import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { getNewsPosts } from '@/lib/sanity'    // ✅ use your GROQ query
 import { formatRelativeTime } from '@/lib/format'
 import { Clock, User } from 'lucide-react'
+import { getNewsPosts, SanityNewsPost } from '@/lib/sanity'
 
 export const metadata = {
   title: 'Crypto News Philippines',
-  description: 'Latest cryptocurrency news, market updates, and regulatory developments in the Philippines.',
+  description:
+    'Latest cryptocurrency news, market updates, and regulatory developments in the Philippines.',
 }
 
 export default async function NewsPage() {
-  // Fetch from Sanity instead of mock data
-  const allPosts = await getNewsPosts(50)
+  // ✅ Fetch from Sanity
+  const allPosts: SanityNewsPost[] = await getNewsPosts()
 
   return (
     <div className="container py-8 max-w-7xl mx-auto">
@@ -26,20 +27,32 @@ export default async function NewsPage() {
         </p>
       </div>
 
+      {allPosts.length === 0 && (
+        <p className="text-center text-muted-foreground">No news posts yet.</p>
+      )}
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {allPosts.map((post) => (
           <Link key={post._id} href={`/news/${post.slug.current}`}>
             <Card className="group h-full hover:shadow-lg transition-all duration-300 hover:border-brand-blue/50">
               <div className="aspect-[16/10] relative overflow-hidden">
-                <Image
-                  src={post.coverImage.asset.url}
-                  alt={post.title}
-                  fill
-                  className="object-cover transition-transform duration-300 group-hover:scale-105"
-                />
-                <Badge variant="secondary" className="absolute top-3 left-3 bg-brand-blue text-white">
-                  {post.category?.name}
-                </Badge>
+                {post.coverImage?.asset && (
+                  <Image
+                    src={post.coverImage.asset.url}
+                    alt={post.coverImage.alt || post.title}
+                    fill
+                    className="object-cover transition-transform duration-300 group-hover:scale-105"
+                    sizes="(max-width:768px)100vw,(max-width:1200px)50vw,33vw"
+                  />
+                )}
+                {post.category?.name && (
+                  <Badge
+                    variant="secondary"
+                    className="absolute top-3 left-3 bg-brand-blue text-white"
+                  >
+                    {post.category.name}
+                  </Badge>
+                )}
               </div>
 
               <CardContent className="p-4 flex-1 flex flex-col">

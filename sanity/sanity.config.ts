@@ -7,7 +7,7 @@ export default defineConfig({
   name: 'default',
   title: 'DailyCrypto',
 
-  projectId: 'qose90o2',
+  projectId: 'uiu9mgqs',
   dataset: 'production',
 
   plugins: [

@@ -35,15 +35,52 @@ export default function ClientHomePage() {
 
     fetchNewsPosts();
   }, []);
+  // Fallback articles for when Sanity has no data
+  const fallbackArticles = [
+    {
+      _id: '1',
+      title: 'Bitcoin Reaches New All-Time High',
+      description: 'Bitcoin continues its impressive rally, breaking through previous resistance levels.',
+      author: { name: 'DailyCrypto Team' },
+      category: { name: 'Markets' },
+      datePublished: new Date().toISOString(),
+      coverImage: null,
+      slug: { current: 'bitcoin-reaches-new-high' }
+    },
+    {
+      _id: '2',
+      title: 'Ethereum 2.0 Staking Surpasses 10 Million ETH',
+      description: 'The Ethereum network sees record participation in staking.',
+      author: { name: 'DailyCrypto Team' },
+      category: { name: 'Technology' },
+      datePublished: new Date().toISOString(),
+      coverImage: null,
+      slug: { current: 'ethereum-staking-milestone' }
+    },
+    {
+      _id: '3',
+      title: 'Philippines SEC Issues New Crypto Guidelines',
+      description: 'Regulatory clarity brings confidence to the Philippine crypto market.',
+      author: { name: 'DailyCrypto Team' },
+      category: { name: 'Regulation' },
+      datePublished: new Date().toISOString(),
+      coverImage: null,
+      slug: { current: 'philippines-crypto-guidelines' }
+    }
+  ];
+
+  // Use Sanity data or fallback to mock data
+  const articlesToUse = newsPosts.length > 0 ? newsPosts : fallbackArticles;
+
   // Get articles from Sanity data
-  const featuredArticles = newsPosts.filter(post => post.featured);
-  const regularArticles = newsPosts.filter(post => !post.featured);
-  
+  const featuredArticles = articlesToUse.filter((post: any) => post.featured);
+  const regularArticles = articlesToUse.filter((post: any) => !post.featured);
+
   // Use featured articles first, then regular articles as fallback
-  const featuredArticle = featuredArticles[0] || newsPosts[0];
-  const secondaryArticles = featuredArticles.slice(1, 3).length > 0 
-    ? featuredArticles.slice(1, 3) 
-    : newsPosts.slice(1, 4);
+  const featuredArticle = featuredArticles[0] || articlesToUse[0];
+  const secondaryArticles = featuredArticles.slice(1, 3).length > 0
+    ? featuredArticles.slice(1, 3)
+    : articlesToUse.slice(1, 4);
 
   // Transform articles to match hero section format
   const transformedFeaturedArticle = featuredArticle ? {
@@ -57,7 +94,7 @@ export default function ClientHomePage() {
     slug: featuredArticle.slug?.current || ''
   } : null;
 
-  const transformedSecondaryArticles = secondaryArticles.map(article => ({
+  const transformedSecondaryArticles = secondaryArticles.map((article: any) => ({
     id: article._id,
     title: article.title,
     excerpt: article.description,
@@ -87,20 +124,19 @@ export default function ClientHomePage() {
       
       {/* Hero News Section with Enhanced Spacing */}
       <section className="w-full bg-gradient-to-b from-[var(--color-background-site)] to-[var(--color-surface)] py-4">
-        {!isLoading && transformedFeaturedArticle && (
-          <HeroNewsSection 
-            featuredArticle={transformedFeaturedArticle}
-            secondaryArticles={transformedSecondaryArticles}
-            priceTickers={heroTickers}
-          />
-        )}
-        {isLoading && (
+        {isLoading ? (
           <div className="container mx-auto px-4 sm:px-6 max-w-7xl">
             <div className="text-center py-12">
               <div className="w-8 h-8 border-2 border-blue-500/30 border-t-blue-500 rounded-full animate-spin mx-auto mb-4" />
               <p className="text-[var(--color-text-secondary)]">Loading latest news...</p>
             </div>
           </div>
+        ) : (
+          <HeroNewsSection
+            featuredArticle={transformedFeaturedArticle!}
+            secondaryArticles={transformedSecondaryArticles}
+            priceTickers={heroTickers}
+          />
         )}
       </section>
       

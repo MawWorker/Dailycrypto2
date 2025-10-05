@@ -26,10 +26,20 @@ interface Article {
   slug: string
 }
 
+interface SanityArticle {
+  _id: string;
+  title: string;
+  description: string;
+  slug: { current: string };
+  datePublished: string;
+  category?: { name: string };
+}
+
 interface HeroNewsSectionProps {
   featuredArticle: Article
   secondaryArticles: Article[]
   priceTickers: PriceTicker[]
+  sanityArticles?: SanityArticle[]
 }
 
 const formatTimeAgo = (dateString: string) => {
@@ -87,7 +97,8 @@ const YouTubeVideoCard = () => {
 export default function HeroNewsSection({
   featuredArticle,
   secondaryArticles,
-  priceTickers
+  priceTickers,
+  sanityArticles
 }: HeroNewsSectionProps) {
   // Small articles section - exactly 3 articles
   const smallArticles = secondaryArticles.slice(0, 3)
@@ -250,7 +261,7 @@ export default function HeroNewsSection({
 
           {/* 3. Latest Crypto News - Mobile */}
           <div>
-            <LatestCryptoNews />
+            <LatestCryptoNews sanityArticles={sanityArticles} />
           </div>
 
           {/* 4. YouTube Video - Mobile */}
@@ -261,7 +272,7 @@ export default function HeroNewsSection({
         <div className="hidden lg:grid gap-6 lg:grid-cols-4 lg:h-[600px]">
           {/* Latest Crypto News Sidebar - Column 1 */}
           <div className="lg:col-span-1">
-            <LatestCryptoNews />
+            <LatestCryptoNews sanityArticles={sanityArticles} />
           </div>
 
           {/* Main Hero Article - Columns 2-3 */}

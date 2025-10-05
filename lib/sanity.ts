@@ -129,6 +129,14 @@ export async function getNewsPosts(
   return (await client.fetch(query)) || []
 }
 
+export async function getLatestNewsPosts(
+  limit: number = 23
+): Promise<SanityNewsPost[]> {
+  const query = `*[_type == "newsPost"]
+                | order(datePublished desc)[0...${limit}] {${newsPostFields}}`
+  return (await client.fetch(query)) || []
+}
+
 export async function getNewsPostBySlug(
   slug: string
 ): Promise<SanityNewsPost | null> {

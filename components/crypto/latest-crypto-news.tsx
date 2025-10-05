@@ -15,6 +15,19 @@ interface NewsItem {
   slug: string;
 }
 
+interface SanityArticle {
+  _id: string;
+  title: string;
+  description: string;
+  slug: { current: string };
+  datePublished: string;
+  category?: { name: string };
+}
+
+interface LatestCryptoNewsProps {
+  sanityArticles?: SanityArticle[];
+}
+
 interface SentimentDotProps {
   sentiment: 'positive' | 'negative' | 'neutral';
 }
@@ -31,8 +44,17 @@ const SentimentDot = ({ sentiment }: SentimentDotProps) => {
   );
 };
 
-export const LatestCryptoNews = () => {
-  const newsData = useMemo<NewsItem[]>(() => [
+const formatTimeFromDate = (dateString: string) => {
+  return new Intl.DateTimeFormat('en-PH', {
+    timeZone: 'Asia/Manila',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true,
+  }).format(new Date(dateString));
+};
+
+export const LatestCryptoNews = ({ sanityArticles }: LatestCryptoNewsProps) => {
+  const fallbackNewsData = useMemo<NewsItem[]>(() => [
     {
       id: '1',
       time: '2:45 PM',
@@ -233,6 +255,23 @@ export const LatestCryptoNews = () => {
       slug: 'web3-gaming-summit-manila-2025'
     }
   ], []);
+
+  // Transform Sanity articles to NewsItem format, or use fallback
+  const newsData = useMemo<NewsItem[]>(() => {
+    if (sanityArticles && sanityArticles.length > 0) {
+      // Use Sanity articles (skip first 4 since they're in hero sections)
+      return sanityArticles.slice(4, 27).map(article => ({
+        id: article._id,
+        time: formatTimeFromDate(article.datePublished),
+        sentiment: 'neutral' as const,
+        headline: article.title,
+        blurb: article.description,
+        slug: article.slug.current,
+      }));
+    }
+    // Use fallback hardcoded data
+    return fallbackNewsData;
+  }, [sanityArticles, fallbackNewsData]);
 
   return (
     <div className="w-full h-full overflow-hidden rounded-2xl bg-[var(--color-surface)] shadow-lg transition-all duration-300 hover:shadow-xl flex flex-col lg:h-[600px]">

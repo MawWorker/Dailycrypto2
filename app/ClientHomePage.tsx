@@ -18,11 +18,11 @@ export default function ClientHomePage() {
   const [newsPosts, setNewsPosts] = useState<SanityNewsPost[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Fetch news posts from Sanity
+  // Fetch news posts from Sanity - always fetch latest by datePublished
   useEffect(() => {
     const fetchNewsPosts = async () => {
       try {
-        const posts = await getNewsPosts(10); // Get latest 10 posts
+        const posts = await getNewsPosts(50); // Get latest 50 posts sorted by datePublished DESC
         setNewsPosts(posts);
       } catch (error) {
         console.warn('Sanity data unavailable, using fallback:', error);
@@ -72,15 +72,10 @@ export default function ClientHomePage() {
   // Use Sanity data or fallback to mock data
   const articlesToUse = newsPosts.length > 0 ? newsPosts : fallbackArticles;
 
-  // Get articles from Sanity data
-  const featuredArticles = articlesToUse.filter((post: any) => post.featured);
-  const regularArticles = articlesToUse.filter((post: any) => !post.featured);
-
-  // Use featured articles first, then regular articles as fallback
-  const featuredArticle = featuredArticles[0] || articlesToUse[0];
-  const secondaryArticles = featuredArticles.slice(1, 3).length > 0
-    ? featuredArticles.slice(1, 3)
-    : articlesToUse.slice(1, 4);
+  // CONTENT FLOW: Always use newest articles regardless of featured status
+  // #1 newest = Big Hero, #2-4 newest = Smaller Hero sections
+  const featuredArticle = articlesToUse[0]; // Newest article goes to big hero
+  const secondaryArticles = articlesToUse.slice(1, 4); // Next 3 articles go to smaller hero
 
   // Transform articles to match hero section format
   const transformedFeaturedArticle = featuredArticle ? {
@@ -136,6 +131,7 @@ export default function ClientHomePage() {
             featuredArticle={transformedFeaturedArticle!}
             secondaryArticles={transformedSecondaryArticles}
             priceTickers={heroTickers}
+            sanityArticles={newsPosts}
           />
         )}
       </section>

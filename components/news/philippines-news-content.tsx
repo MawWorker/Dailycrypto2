@@ -263,7 +263,33 @@ const philippinesEngagementData: Record<string, any> = {
   'ph-12': { views: '29.8K', likes: '2.2K', shares: '1.3K', comments: '423' }
 };
 
-export function PhilippinesNewsContent() {
+interface SanityArticle {
+  _id: string;
+  title: string;
+  slug: { current: string };
+  description: string;
+  excerpt?: string;
+  coverImage: any;
+  author: {
+    name: string;
+    bio?: string;
+    avatar?: any;
+  };
+  category: {
+    name: string;
+    slug?: { current: string };
+  };
+  tags: string[];
+  datePublished: string;
+  readingTime: number;
+  featured?: boolean;
+}
+
+interface PhilippinesNewsContentProps {
+  sanityArticles?: SanityArticle[];
+}
+
+export function PhilippinesNewsContent({ sanityArticles }: PhilippinesNewsContentProps) {
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -272,7 +298,28 @@ export function PhilippinesNewsContent() {
     setLastUpdated(new Date());
   }, []);
 
-  const allPhilippinesArticles = philippinesNewsArticles;
+  // Use Sanity articles if available, otherwise fallback to hardcoded
+  const allPhilippinesArticles = sanityArticles && sanityArticles.length > 0
+    ? sanityArticles.map(article => ({
+        id: article._id,
+        slug: article.slug.current,
+        title: article.title,
+        description: article.description,
+        excerpt: article.excerpt || article.description,
+        coverImage: article.coverImage?.asset?.url || 'https://images.unsplash.com/photo-1680499661732-3cfae4690e1c?q=80&w=735&auto=format&fit=crop',
+        author: {
+          name: article.author.name,
+          bio: article.author.bio || 'Crypto journalist',
+          avatar: article.author.avatar?.asset?.url || 'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=400',
+        },
+        category: article.category.name,
+        datePublished: article.datePublished,
+        readingTime: article.readingTime,
+        featured: article.featured || false,
+        tags: article.tags || [],
+      }))
+    : philippinesNewsArticles;
+
   const featuredArticles = allPhilippinesArticles.filter(article => article.featured);
   const regularArticles = allPhilippinesArticles.filter(article => !article.featured);
 

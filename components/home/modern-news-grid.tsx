@@ -13,11 +13,11 @@ export function ModernNewsGrid() {
   const [latestArticles, setLatestArticles] = useState<SanityNewsPost[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Fetch latest articles from Sanity
+  // Fetch ONLY featured articles from Sanity
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const posts = await getNewsPosts(6); // Get latest 6 articles
+        const posts = await getNewsPosts(6, true); // Get latest 6 FEATURED articles only
         setLatestArticles(posts);
       } catch (error) {
         console.warn('Sanity data unavailable, using fallback:', error);
@@ -45,7 +45,13 @@ export function ModernNewsGrid() {
     return (
       <div className="container mx-auto px-4 sm:px-6 max-w-7xl">
         <div className="text-center py-12">
-          <p className="text-[var(--color-text-secondary)]">No articles available at the moment.</p>
+          <div className="p-3 bg-gradient-to-r from-[var(--color-primary-brand)] to-purple-600 rounded-xl shadow-lg w-fit mx-auto mb-4">
+            <Star className="h-6 w-6 text-white" />
+          </div>
+          <h3 className="text-xl font-bold text-[var(--color-text-primary)] mb-2">No Featured Stories Yet</h3>
+          <p className="text-[var(--color-text-secondary)]">
+            Mark articles as "Featured" in Sanity Studio to display them here.
+          </p>
         </div>
       </div>
     );

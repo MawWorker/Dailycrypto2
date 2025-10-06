@@ -520,7 +520,7 @@ export function MarketOverviewContent() {
               className="w-full rounded-xl border-[var(--color-primary-brand)] text-[var(--color-primary-brand)] hover:bg-[var(--color-primary-brand)] hover:text-white"
               asChild
             >
-              <Link href="/news" className="flex items-center justify-center space-x-2">
+              <Link href="/news/latest" className="flex items-center justify-center space-x-2">
                 <span>View All Market News</span>
                 <ExternalLink className="h-4 w-4" />
               </Link>
@@ -716,7 +716,7 @@ export function MarketOverviewContent() {
               className="rounded-xl border-[var(--color-primary-brand)] text-[var(--color-primary-brand)] hover:bg-[var(--color-primary-brand)] hover:text-white"
               asChild
             >
-              <Link href="/news">
+              <Link href="/news/latest">
                 Market News
               </Link>
             </Button>

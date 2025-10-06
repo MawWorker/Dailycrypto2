@@ -29,9 +29,9 @@ const NAV_ITEMS = [
     name: "Home", 
     link: "/",
   },
-  { 
-    name: "News", 
-    link: "/news",
+  {
+    name: "News",
+    link: "/news/latest",
     dropdown: [
       { name: "Latest Crypto News", link: "/news/latest" },
       { name: "Philippines Crypto News", link: "/news/philippines" },

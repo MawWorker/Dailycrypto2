@@ -1002,7 +1002,7 @@ export function MarketOutlookContent() {
               className="rounded-xl border-[var(--color-primary-brand)] text-[var(--color-primary-brand)] hover:bg-[var(--color-primary-brand)] hover:text-white"
               asChild
             >
-              <Link href="/news">
+              <Link href="/news/latest">
                 Read Market News
               </Link>
             </Button>

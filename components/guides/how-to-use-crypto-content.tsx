@@ -995,7 +995,7 @@ export function HowToUseCryptoContent() {
                 className="rounded-xl bg-[var(--color-primary-brand)] hover:bg-[var(--color-primary-brand)]/90 text-white"
                 asChild
               >
-                <a href="/news">
+                <a href="/news/latest">
                   Read Latest News
                 </a>
               </Button>

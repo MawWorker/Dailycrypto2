@@ -115,7 +115,7 @@ export function RecommendedArticlesSidebar() {
               className="w-full rounded-xl border-[var(--color-primary-brand)] text-[var(--color-primary-brand)] hover:bg-[var(--color-primary-brand)] hover:text-white"
               asChild
             >
-              <Link href="/news" className="flex items-center justify-center space-x-2">
+              <Link href="/news/latest" className="flex items-center justify-center space-x-2">
                 <span>Read More Articles</span>
                 <ArrowRight className="h-4 w-4" />
               </Link>

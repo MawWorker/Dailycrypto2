@@ -141,7 +141,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             Home
           </Link>
           <span>/</span>
-          <Link href="/news" className="hover:text-foreground transition-colors">
+          <Link href="/news/latest" className="hover:text-foreground transition-colors">
             News
           </Link>
           <span>/</span>

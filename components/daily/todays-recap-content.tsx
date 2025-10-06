@@ -596,7 +596,7 @@ export function TodaysRecapContent() {
               className="rounded-xl"
               asChild
             >
-              <Link href="/news">
+              <Link href="/news/latest">
                 Browse All News
               </Link>
             </Button>

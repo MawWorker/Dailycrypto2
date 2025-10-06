@@ -1437,7 +1437,7 @@ export function MobileWalletsContent() {
               className="rounded-xl bg-[var(--color-primary-brand)] hover:bg-[var(--color-primary-brand)]/90 text-white"
               asChild
             >
-              <Link href="/news">
+              <Link href="/news/latest">
                 Latest Crypto News
               </Link>
             </Button>

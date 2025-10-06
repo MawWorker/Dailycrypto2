@@ -56,7 +56,10 @@ export function MarketOutlookContent() {
 
     async function fetchMarketTrends() {
       try {
-        const news = await getNewsPostsByContentType(['analysis', 'technical', 'feature'], 6);
+        const news = await getNewsPostsByContentType(
+          ['analysis', 'technical', 'feature', 'industry', 'innovation', 'global'],
+          6
+        );
         setMarketTrendsNews(news);
       } catch (error) {
         console.error('Error fetching market trends:', error);
@@ -476,6 +479,9 @@ export function MarketOutlookContent() {
                   "w-3 h-3 rounded-full mt-2 flex-shrink-0",
                   news.contentType === 'analysis' ? 'bg-green-500' :
                   news.contentType === 'technical' ? 'bg-blue-500' :
+                  news.contentType === 'industry' ? 'bg-orange-500' :
+                  news.contentType === 'innovation' ? 'bg-cyan-500' :
+                  news.contentType === 'global' ? 'bg-indigo-500' :
                   'bg-purple-500'
                 )} />
 
@@ -490,11 +496,18 @@ export function MarketOutlookContent() {
                         "text-xs",
                         news.contentType === 'analysis' ? 'border-green-500 text-green-700 dark:text-green-300' :
                         news.contentType === 'technical' ? 'border-blue-500 text-blue-700 dark:text-blue-300' :
+                        news.contentType === 'industry' ? 'border-orange-500 text-orange-700 dark:text-orange-300' :
+                        news.contentType === 'innovation' ? 'border-cyan-500 text-cyan-700 dark:text-cyan-300' :
+                        news.contentType === 'global' ? 'border-indigo-500 text-indigo-700 dark:text-indigo-300' :
                         'border-purple-500 text-purple-700 dark:text-purple-300'
                       )}
                     >
                       {news.contentType === 'analysis' ? 'Analysis' :
-                       news.contentType === 'technical' ? 'Technical' : 'Feature'}
+                       news.contentType === 'technical' ? 'Technical' :
+                       news.contentType === 'industry' ? 'Industry' :
+                       news.contentType === 'innovation' ? 'Innovation' :
+                       news.contentType === 'global' ? 'Global' :
+                       'Feature'}
                     </Badge>
                     {news.category && (
                       <Badge variant="secondary" className="text-xs">

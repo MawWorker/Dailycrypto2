@@ -8,41 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { getNewsPostsByContentType, type SanityNewsPost } from '@/lib/sanity';
-import { 
-  TrendingUp, 
-  TrendingDown, 
-  Target, 
-  BarChart3, 
-  Zap, 
-  AlertTriangle, 
-  Clock, 
-  Calendar, 
-  Eye, 
-  Star, 
-  ChevronRight, 
-  RefreshCw,
-  Telescope,
-  Brain,
-  Lightbulb,
-  Shield,
-  Globe,
-  Users,
-  DollarSign,
-  Activity,
-  Gauge,
-  PieChart,
-  LineChart,
-  ArrowUpRight,
-  ArrowDownRight,
-  Flame,
-  Award,
-  Sparkles,
-  Compass,
-  Map,
-  Crosshair,
-  Radar,
-  Binoculars
-} from 'lucide-react';
+import { TrendingUp, TrendingDown, Target, ChartBar as BarChart3, Zap, TriangleAlert as AlertTriangle, Clock, Calendar, Eye, Star, ChevronRight, RefreshCw, Telescope, Brain, Lightbulb, Shield, Globe, Users, DollarSign, Activity, Gauge, ChartPie as PieChart, ChartLine as LineChart, ArrowUpRight, ArrowDownRight, Flame, Award, Sparkles, Compass, Map, Crosshair, Radar, Binoculars } from 'lucide-react';
 import { formatPHP, formatPercentage, formatRelativeTime } from '@/lib/format';
 import { useCryptoPrices } from '@/hooks/use-crypto-prices';
 import { cn } from '@/lib/utils';

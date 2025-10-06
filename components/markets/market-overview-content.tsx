@@ -8,35 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { getNewsPostsByImpact, type SanityNewsPost } from '@/lib/sanity';
-import { 
-  TrendingUp, 
-  TrendingDown, 
-  DollarSign, 
-  BarChart3, 
-  Activity, 
-  RefreshCw,
-  Globe,
-  Zap,
-  Target,
-  AlertTriangle,
-  Clock,
-  Users,
-  Eye,
-  ArrowUpRight,
-  ArrowDownRight,
-  Percent,
-  PieChart,
-  LineChart,
-  Calendar,
-  Filter,
-  Search,
-  ExternalLink,
-  Flame,
-  Star,
-  ChevronRight,
-  Timer,
-  Gauge
-} from 'lucide-react';
+import { TrendingUp, TrendingDown, DollarSign, ChartBar as BarChart3, Activity, RefreshCw, Globe, Zap, Target, TriangleAlert as AlertTriangle, Clock, Users, Eye, ArrowUpRight, ArrowDownRight, Percent, ChartPie as PieChart, ChartLine as LineChart, Calendar, Filter, Search, ExternalLink, Flame, Star, ChevronRight, Timer, Gauge } from 'lucide-react';
 import { formatPHP, formatLargePHP, formatPercentage, formatRelativeTime } from '@/lib/format';
 import { useCryptoPrices } from '@/hooks/use-crypto-prices';
 import { mockNewsPosts } from '@/lib/content.mock';

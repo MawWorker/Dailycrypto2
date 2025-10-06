@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
+import { getNewsPostsByImpact, type SanityNewsPost } from '@/lib/sanity';
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -75,10 +76,24 @@ export function MarketOverviewContent() {
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [selectedTimeframe, setSelectedTimeframe] = useState<'24h' | '7d' | '30d'>('24h');
+  const [marketNews, setMarketNews] = useState<SanityNewsPost[]>([]);
+  const [newsLoading, setNewsLoading] = useState(true);
 
-  // Set lastUpdated only on client side to avoid hydration mismatch
   useEffect(() => {
     setLastUpdated(new Date());
+
+    async function fetchMarketNews() {
+      try {
+        const news = await getNewsPostsByImpact('high', 4);
+        setMarketNews(news);
+      } catch (error) {
+        console.error('Error fetching market news:', error);
+      } finally {
+        setNewsLoading(false);
+      }
+    }
+
+    fetchMarketNews();
   }, []);
 
   // Mock market indicators
@@ -173,45 +188,6 @@ export function MarketOverviewContent() {
     }
   ];
 
-  // Mock market news
-  const marketNews: MarketNews[] = [
-    {
-      id: '1',
-      title: 'Bitcoin ETFs See Record $2.1B Inflows This Week',
-      summary: 'Institutional demand drives unprecedented capital flows into Bitcoin exchange-traded funds.',
-      impact: 'High',
-      timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-      category: 'Institutional',
-      tickers: ['BTC']
-    },
-    {
-      id: '2',
-      title: 'Ethereum Gas Fees Drop 60% Following Network Upgrade',
-      summary: 'Latest protocol improvements significantly reduce transaction costs for users.',
-      impact: 'Medium',
-      timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
-      category: 'Technology',
-      tickers: ['ETH']
-    },
-    {
-      id: '3',
-      title: 'Philippine Crypto Trading Volume Hits Monthly Record',
-      summary: 'Local exchanges report 340% increase in trading activity amid regulatory clarity.',
-      impact: 'High',
-      timestamp: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
-      category: 'Regional',
-      tickers: ['BTC', 'ETH']
-    },
-    {
-      id: '4',
-      title: 'Major DeFi Protocol Announces $50M Security Fund',
-      summary: 'Leading protocol establishes insurance fund to protect user deposits.',
-      impact: 'Medium',
-      timestamp: new Date(Date.now() - 8 * 60 * 60 * 1000).toISOString(),
-      category: 'Security',
-      tickers: ['UNI', 'AAVE']
-    }
-  ];
 
   // Get top gainers and losers from crypto prices
   const topGainers = cryptoPrices
@@ -496,64 +472,75 @@ export function MarketOverviewContent() {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {marketNews.map((news, index) => (
-            <div key={news.id} className="flex items-start space-x-4 p-4 rounded-xl hover:bg-[var(--color-muted-subtle)] transition-colors group">
-              <div className={cn(
-                "w-2 h-2 rounded-full mt-2 flex-shrink-0",
-                news.impact === 'High' ? 'bg-red-500 animate-pulse' : 
-                news.impact === 'Medium' ? 'bg-yellow-500' : 'bg-green-500'
-              )} />
-              
-              <div className="flex-1">
-                <div className="flex items-center space-x-2 mb-2">
-                  <Badge 
-                    variant="outline" 
-                    className={cn(
-                      "text-xs",
-                      news.impact === 'High' ? 'border-red-500 text-red-700 dark:text-red-300' :
-                      news.impact === 'Medium' ? 'border-yellow-500 text-yellow-700 dark:text-yellow-300' :
-                      'border-green-500 text-green-700 dark:text-green-300'
+          {newsLoading ? (
+            <div className="space-y-4">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="flex items-start space-x-4 p-4 rounded-xl animate-pulse">
+                  <div className="w-2 h-2 rounded-full mt-2 flex-shrink-0 bg-gray-300 dark:bg-gray-700" />
+                  <div className="flex-1 space-y-2">
+                    <div className="h-4 bg-gray-300 dark:bg-gray-700 rounded w-3/4" />
+                    <div className="h-3 bg-gray-300 dark:bg-gray-700 rounded w-full" />
+                    <div className="h-3 bg-gray-300 dark:bg-gray-700 rounded w-1/2" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : marketNews.length === 0 ? (
+            <div className="text-center py-8 text-[var(--color-text-secondary)]">
+              <p>No high-impact news available at the moment.</p>
+              <p className="text-sm mt-2">Check back soon for market-moving updates.</p>
+            </div>
+          ) : (
+            marketNews.map((news) => (
+              <Link
+                key={news._id}
+                href={`/news/${news.slug.current}`}
+                className="flex items-start space-x-4 p-4 rounded-xl hover:bg-[var(--color-muted-subtle)] transition-colors group block"
+              >
+                <div className="w-2 h-2 rounded-full mt-2 flex-shrink-0 bg-red-500 animate-pulse" />
+
+                <div className="flex-1">
+                  <div className="flex items-center space-x-2 mb-2 flex-wrap">
+                    <Badge
+                      variant="outline"
+                      className="text-xs border-red-500 text-red-700 dark:text-red-300"
+                    >
+                      High Impact
+                    </Badge>
+                    {news.category && (
+                      <Badge variant="secondary" className="text-xs">
+                        {news.category.name}
+                      </Badge>
                     )}
-                  >
-                    {news.impact} Impact
-                  </Badge>
-                  <Badge variant="secondary" className="text-xs">
-                    {news.category}
-                  </Badge>
-                  <div className="flex space-x-1">
-                    {news.tickers.map(ticker => (
-                      <Badge key={ticker} variant="outline" className="text-xs font-mono">
-                        {ticker}
+                    {news.tags && news.tags.slice(0, 2).map(tag => (
+                      <Badge key={tag} variant="outline" className="text-xs font-mono">
+                        {tag}
                       </Badge>
                     ))}
                   </div>
-                </div>
-                
-                <h4 className="font-bold text-[var(--color-text-primary)] mb-1 group-hover:text-[var(--color-primary-brand)] transition-colors">
-                  {news.title}
-                </h4>
-                
-                <p className="text-sm text-[var(--color-text-secondary)] mb-2 leading-relaxed">
-                  {news.summary}
-                </p>
-                
-                <div className="flex items-center space-x-3 text-xs text-[var(--color-text-secondary)]">
-                  <div className="flex items-center space-x-1">
-                    <Clock className="h-3 w-3" />
-                    <span>{formatRelativeTime(news.timestamp)}</span>
+
+                  <h4 className="font-bold text-[var(--color-text-primary)] mb-1 group-hover:text-[var(--color-primary-brand)] transition-colors">
+                    {news.title}
+                  </h4>
+
+                  <p className="text-sm text-[var(--color-text-secondary)] mb-2 leading-relaxed">
+                    {news.excerpt || news.description}
+                  </p>
+
+                  <div className="flex items-center space-x-3 text-xs text-[var(--color-text-secondary)]">
+                    <div className="flex items-center space-x-1">
+                      <Clock className="h-3 w-3" />
+                      <span>{formatRelativeTime(news.datePublished)}</span>
+                    </div>
+                    <div className="flex items-center space-x-1 text-[var(--color-primary-brand)]">
+                      <span>Read More</span>
+                      <ChevronRight className="h-3 w-3" />
+                    </div>
                   </div>
-                  <Button 
-                    variant="ghost" 
-                    size="sm"
-                    className="text-[var(--color-primary-brand)] hover:text-[var(--color-primary-brand)]/80 p-0 h-auto"
-                  >
-                    Read More
-                    <ChevronRight className="h-3 w-3 ml-1" />
-                  </Button>
                 </div>
-              </div>
-            </div>
-          ))}
+              </Link>
+            ))
+          )}
           
           <div className="pt-4 border-t border-[var(--color-muted-subtle)]">
             <Button 

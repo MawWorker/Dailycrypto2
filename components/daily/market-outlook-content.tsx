@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
+import { getNewsPostsByContentType, type SanityNewsPost } from '@/lib/sanity';
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -81,10 +82,24 @@ export function MarketOutlookContent() {
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [selectedTimeframe, setSelectedTimeframe] = useState<'1W' | '1M' | '3M' | '6M'>('1M');
+  const [marketTrendsNews, setMarketTrendsNews] = useState<SanityNewsPost[]>([]);
+  const [trendsLoading, setTrendsLoading] = useState(true);
 
-  // Set lastUpdated only on client side to avoid hydration mismatch
   useEffect(() => {
     setLastUpdated(new Date());
+
+    async function fetchMarketTrends() {
+      try {
+        const news = await getNewsPostsByContentType(['analysis', 'technical', 'feature'], 6);
+        setMarketTrendsNews(news);
+      } catch (error) {
+        console.error('Error fetching market trends:', error);
+      } finally {
+        setTrendsLoading(false);
+      }
+    }
+
+    fetchMarketTrends();
   }, []);
 
   // Market predictions data
@@ -139,57 +154,6 @@ export function MarketOutlookContent() {
     }
   ];
 
-  // Market trends data
-  const marketTrends: MarketTrend[] = [
-    {
-      title: 'Institutional Bitcoin Adoption Accelerating',
-      description: 'Major corporations and pension funds continue adding Bitcoin to treasury reserves',
-      impact: 'Positive',
-      timeframe: 'Q1 2025',
-      probability: 85,
-      category: 'Institutional'
-    },
-    {
-      title: 'Central Bank Digital Currencies (CBDCs) Expansion',
-      description: 'More countries launching CBDC pilots, potentially affecting crypto adoption',
-      impact: 'Neutral',
-      timeframe: 'Next 6 months',
-      probability: 92,
-      category: 'Regulatory'
-    },
-    {
-      title: 'DeFi 2.0 Infrastructure Maturation',
-      description: 'Next-generation DeFi protocols with improved security and user experience',
-      impact: 'Positive',
-      timeframe: 'Q2 2025',
-      probability: 78,
-      category: 'Technology'
-    },
-    {
-      title: 'Regulatory Clarity in Major Markets',
-      description: 'Clear crypto regulations expected in US, EU, and Asia-Pacific regions',
-      impact: 'Positive',
-      timeframe: 'Next 12 months',
-      probability: 71,
-      category: 'Regulatory'
-    },
-    {
-      title: 'Web3 Gaming Mainstream Adoption',
-      description: 'Traditional gaming companies integrating blockchain and NFT elements',
-      impact: 'Positive',
-      timeframe: 'Q3 2025',
-      probability: 68,
-      category: 'Gaming'
-    },
-    {
-      title: 'Energy Efficiency Concerns',
-      description: 'Continued focus on sustainable blockchain solutions and green mining',
-      impact: 'Neutral',
-      timeframe: 'Ongoing',
-      probability: 89,
-      category: 'Environmental'
-    }
-  ];
 
   // Technical indicators data
   const technicalIndicators: TechnicalIndicator[] = [
@@ -512,70 +476,94 @@ export function MarketOutlookContent() {
             <Radar className="h-6 w-6 text-[var(--color-primary-brand)]" />
             <span>Market Trends & Catalysts</span>
             <Badge variant="secondary" className="rounded-xl">
-              {marketTrends.length} trends identified
+              Analysis & Insights
             </Badge>
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {marketTrends.map((trend, index) => (
-            <div key={index} className="flex items-start space-x-4 p-4 rounded-xl hover:bg-[var(--color-muted-subtle)] transition-colors group">
-              <div className={cn(
-                "w-3 h-3 rounded-full mt-2 flex-shrink-0",
-                trend.impact === 'Positive' ? 'bg-green-500' : 
-                trend.impact === 'Negative' ? 'bg-red-500' : 'bg-blue-500'
-              )} />
-              
-              <div className="flex-1">
-                <div className="flex items-center space-x-3 mb-2">
-                  <h4 className="font-bold text-[var(--color-text-primary)] group-hover:text-[var(--color-primary-brand)] transition-colors">
-                    {trend.title}
-                  </h4>
-                  <Badge 
-                    variant="outline" 
-                    className={cn(
-                      "text-xs",
-                      trend.impact === 'Positive' ? 'border-green-500 text-green-700 dark:text-green-300' :
-                      trend.impact === 'Negative' ? 'border-red-500 text-red-700 dark:text-red-300' :
-                      'border-blue-500 text-blue-700 dark:text-blue-300'
-                    )}
-                  >
-                    {trend.impact}
-                  </Badge>
-                  <Badge variant="secondary" className="text-xs">
-                    {trend.category}
-                  </Badge>
-                </div>
-                
-                <p className="text-[var(--color-text-secondary)] text-sm mb-3 leading-relaxed">
-                  {trend.description}
-                </p>
-                
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4 text-xs text-[var(--color-text-secondary)]">
-                    <div className="flex items-center space-x-1">
-                      <Calendar className="h-3 w-3" />
-                      <span>{trend.timeframe}</span>
-                    </div>
-                    <div className="flex items-center space-x-1">
-                      <Target className="h-3 w-3" />
-                      <span>{trend.probability}% probability</span>
-                    </div>
-                  </div>
-                  
-                  <div className="w-24 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                    <div 
-                      className={cn(
-                        "h-2 rounded-full transition-all duration-500",
-                        trend.impact === 'Positive' ? 'bg-green-500' :
-                        trend.impact === 'Negative' ? 'bg-red-500' : 'bg-blue-500'
-                      )}
-                      style={{ width: `${trend.probability}%` }}
-                    ></div>
+          {trendsLoading ? (
+            <div className="space-y-4">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="flex items-start space-x-4 p-4 rounded-xl animate-pulse">
+                  <div className="w-3 h-3 rounded-full mt-2 flex-shrink-0 bg-gray-300 dark:bg-gray-700" />
+                  <div className="flex-1 space-y-2">
+                    <div className="h-4 bg-gray-300 dark:bg-gray-700 rounded w-3/4" />
+                    <div className="h-3 bg-gray-300 dark:bg-gray-700 rounded w-full" />
+                    <div className="h-3 bg-gray-300 dark:bg-gray-700 rounded w-1/2" />
                   </div>
                 </div>
-              </div>
+              ))}
             </div>
-          ))}
+          ) : marketTrendsNews.length === 0 ? (
+            <div className="text-center py-8 text-[var(--color-text-secondary)]">
+              <p>No market trends analysis available at the moment.</p>
+              <p className="text-sm mt-2">Check back soon for expert insights.</p>
+            </div>
+          ) : (
+            marketTrendsNews.map((news) => (
+              <Link
+                key={news._id}
+                href={`/news/${news.slug.current}`}
+                className="flex items-start space-x-4 p-4 rounded-xl hover:bg-[var(--color-muted-subtle)] transition-colors group block"
+              >
+                <div className={cn(
+                  "w-3 h-3 rounded-full mt-2 flex-shrink-0",
+                  news.contentType === 'analysis' ? 'bg-green-500' :
+                  news.contentType === 'technical' ? 'bg-blue-500' :
+                  'bg-purple-500'
+                )} />
+
+                <div className="flex-1">
+                  <div className="flex items-center space-x-3 mb-2 flex-wrap">
+                    <h4 className="font-bold text-[var(--color-text-primary)] group-hover:text-[var(--color-primary-brand)] transition-colors">
+                      {news.title}
+                    </h4>
+                    <Badge
+                      variant="outline"
+                      className={cn(
+                        "text-xs",
+                        news.contentType === 'analysis' ? 'border-green-500 text-green-700 dark:text-green-300' :
+                        news.contentType === 'technical' ? 'border-blue-500 text-blue-700 dark:text-blue-300' :
+                        'border-purple-500 text-purple-700 dark:text-purple-300'
+                      )}
+                    >
+                      {news.contentType === 'analysis' ? 'Analysis' :
+                       news.contentType === 'technical' ? 'Technical' : 'Feature'}
+                    </Badge>
+                    {news.category && (
+                      <Badge variant="secondary" className="text-xs">
+                        {news.category.name}
+                      </Badge>
+                    )}
+                  </div>
+
+                  <p className="text-[var(--color-text-secondary)] text-sm mb-3 leading-relaxed">
+                    {news.excerpt || news.description}
+                  </p>
+
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-4 text-xs text-[var(--color-text-secondary)]">
+                      <div className="flex items-center space-x-1">
+                        <Calendar className="h-3 w-3" />
+                        <span>{formatRelativeTime(news.datePublished)}</span>
+                      </div>
+                      {news.readingTime && (
+                        <div className="flex items-center space-x-1">
+                          <Clock className="h-3 w-3" />
+                          <span>{news.readingTime} min read</span>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="flex items-center space-x-1 text-[var(--color-primary-brand)]">
+                      <span>Read Analysis</span>
+                      <ChevronRight className="h-3 w-3" />
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            ))
+          )}
         </CardContent>
       </Card>
 

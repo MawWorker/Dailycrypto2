@@ -202,3 +202,21 @@ export async function getAuthors() {
       }`)) || []
   )
 }
+
+export async function getNewsPostsByImpact(
+  impact: string,
+  limit: number = 4
+): Promise<SanityNewsPost[]> {
+  const query = `*[_type == "newsPost" && impact == $impact]
+                | order(datePublished desc)[0...${limit}] {${newsPostFields}}`
+  return (await client.fetch(query, { impact })) || []
+}
+
+export async function getNewsPostsByContentType(
+  contentTypes: string[],
+  limit: number = 6
+): Promise<SanityNewsPost[]> {
+  const query = `*[_type == "newsPost" && contentType in $contentTypes]
+                | order(datePublished desc)[0...${limit}] {${newsPostFields}}`
+  return (await client.fetch(query, { contentTypes })) || []
+}

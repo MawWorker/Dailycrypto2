@@ -38,22 +38,22 @@ const NAV_ITEMS = [
       { name: "Featured Stories", link: "/news/features" }
     ]
   },
-  { 
-    name: "Markets", 
+  {
+    name: "Markets",
     link: "/markets",
     dropdown: [
       { name: "Market Overview", link: "/markets/overview" },
-      { name: "Live Prices", link: "/prices#top-100-crypto" },
-      { name: "Market Outlook", link: "/daily/outlook" }
+      { name: "Live Prices", link: "/prices" }
     ]
   },
-  { 
-    name: "Daily", 
+  {
+    name: "Daily",
     link: "/daily",
     dropdown: [
       { name: "Today's Recap", link: "/daily/today" },
       { name: "Weekly Summary", link: "/daily/weekly" },
-      { name: "Archives", link: "/daily/archives" }
+      { name: "Archives", link: "/daily/archives" },
+      { name: "Market Outlook", link: "/daily/outlook" }
     ]
   },
   { 

@@ -56,11 +56,10 @@ const navigation = [
     ],
   },
   {
-    title: "Markets", 
+    title: "Markets",
     links: [
       { name: "Overview", href: "/markets/overview" },
-      { name: "Prices", href: "/prices" },
-      { name: "Outlook", href: "/daily/outlook" },
+      { name: "Prices", href: "/prices" }
     ],
   },
   {
@@ -69,6 +68,7 @@ const navigation = [
       { name: "Recap", href: "/daily/today" },
       { name: "Weekly", href: "/daily/weekly" },
       { name: "Archives", href: "/archives" },
+      { name: "Outlook", href: "/daily/outlook" }
     ],
   },
   {

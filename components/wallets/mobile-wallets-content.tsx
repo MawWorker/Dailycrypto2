@@ -8,46 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
-import { 
-  Smartphone,
-  Shield,
-  Download,
-  Star,
-  CheckCircle,
-  XCircle,
-  Search,
-  Filter,
-  Grid3X3,
-  List,
-  ChevronDown,
-  ChevronUp,
-  Wallet,
-  Lock,
-  Globe,
-  Zap,
-  Users,
-  Eye,
-  Heart,
-  MessageCircle,
-  ExternalLink,
-  AlertTriangle,
-  Info,
-  Target,
-  Award,
-  Lightbulb,
-  BookOpen,
-  Settings,
-  Key,
-  Copy,
-  QrCode,
-  ArrowUpDown,
-  TrendingUp,
-  BarChart3,
-  Clock,
-  Coins,
-  Building2,
-  Gamepad2
-} from 'lucide-react';
+import { Smartphone, Shield, Download, Star, CircleCheck as CheckCircle, Circle as XCircle, Search, Filter, Grid3x3 as Grid3X3, List, ChevronDown, ChevronUp, Wallet, Lock, Globe, Zap, Users, Eye, Heart, MessageCircle, ExternalLink, TriangleAlert as AlertTriangle, Info, Target, Award, Lightbulb, BookOpen, Settings, Key, Copy, QrCode, ArrowUpDown, TrendingUp, ChartBar as BarChart3, Clock, Coins, Building2, Gamepad2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface MobileWallet {

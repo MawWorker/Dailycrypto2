@@ -5,39 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { 
-  GraduationCap,
-  Lightbulb,
-  Shield,
-  Coins,
-  TrendingUp,
-  Globe,
-  Smartphone,
-  Lock,
-  Users,
-  Zap,
-  Target,
-  BookOpen,
-  ChevronDown,
-  ChevronUp,
-  Bitcoin,
-  Banknote,
-  CreditCard,
-  Building2,
-  ArrowRightLeft,
-  Eye,
-  Wallet,
-  Network,
-  Clock,
-  CheckCircle,
-  AlertTriangle,
-  Info,
-  Star,
-  Gem,
-  Cpu,
-  Database,
-  Link as LinkIcon
-} from 'lucide-react';
+import { GraduationCap, Lightbulb, Shield, Coins, TrendingUp, Globe, Smartphone, Lock, Users, Zap, Target, BookOpen, ChevronDown, ChevronUp, Bitcoin, Banknote, CreditCard, Building2, ArrowRightLeft, Eye, Wallet, Network, Clock, CircleCheck as CheckCircle, TriangleAlert as AlertTriangle, Info, Star, Gem, Cpu, Database, Link as LinkIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface FAQItem {

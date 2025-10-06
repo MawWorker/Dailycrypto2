@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { Wallet, CreditCard, ShoppingCart, Smartphone, Globe, Zap, Shield, Users, ArrowRight, CheckCircle, AlertTriangle, Info, Star, Coins, Send, RadioReceiver as Receive, QrCode, Building2, Plane, Coffee, Gamepad2, Music, ShoppingBag, Car, Home, Utensils, Gift, Heart, ChevronDown, ChevronUp, Target, Lightbulb, BookOpen, Award, MapPin, Clock, DollarSign, TrendingUp, Lock, Eye, Fingerprint, Key, Database, Network, Cpu, Smartphone as Phone } from 'lucide-react';
+import { Wallet, CreditCard, ShoppingCart, Smartphone, Globe, Zap, Shield, Users, ArrowRight, CircleCheck as CheckCircle, TriangleAlert as AlertTriangle, Info, Star, Coins, Send, RadioReceiver as Receive, QrCode, Building2, Plane, Coffee, Gamepad2, Music, ShoppingBag, Car, Chrome as Home, Utensils, Gift, Heart, ChevronDown, ChevronUp, Target, Lightbulb, BookOpen, Award, MapPin, Clock, DollarSign, TrendingUp, Lock, Eye, Fingerprint, Key, Database, Network, Cpu, Smartphone as Phone } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface FAQItem {

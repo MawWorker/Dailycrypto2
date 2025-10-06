@@ -7,27 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { 
-  Calendar, 
-  Clock, 
-  User, 
-  TrendingUp, 
-  AlertTriangle, 
-  Newspaper, 
-  BarChart3, 
-  Shield, 
-  Building2, 
-  Gamepad2, 
-  Share2,
-  ChevronRight,
-  RefreshCw,
-  Hash,
-  Eye,
-  ExternalLink,
-  Zap,
-  Award,
-  Target
-} from 'lucide-react';
+import { Calendar, Clock, User, TrendingUp, TriangleAlert as AlertTriangle, Newspaper, ChartBar as BarChart3, Shield, Building2, Gamepad2, Share2, ChevronRight, RefreshCw, Hash, Eye, ExternalLink, Zap, Award, Target } from 'lucide-react';
 import { formatRelativeTime, formatDateTime } from '@/lib/format';
 import { todaysMockupArticles, dailyRecapSummary, articleEngagementMetrics } from '@/lib/daily-recap-content';
 import { cn } from '@/lib/utils';

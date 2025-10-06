@@ -5,40 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { 
-  Database,
-  Link as LinkIcon,
-  Shield,
-  Users,
-  Zap,
-  Globe,
-  Lock,
-  CheckCircle,
-  AlertTriangle,
-  Info,
-  Star,
-  Cpu,
-  Network,
-  Clock,
-  Eye,
-  FileText,
-  Building2,
-  Smartphone,
-  Heart,
-  Gamepad2,
-  ChevronDown,
-  ChevronUp,
-  Blocks,
-  Hash,
-  Vote,
-  Key,
-  Server,
-  ArrowRight,
-  Target,
-  Lightbulb,
-  BookOpen,
-  Award
-} from 'lucide-react';
+import { Database, Link as LinkIcon, Shield, Users, Zap, Globe, Lock, CircleCheck as CheckCircle, TriangleAlert as AlertTriangle, Info, Star, Cpu, Network, Clock, Eye, FileText, Building2, Smartphone, Heart, Gamepad2, ChevronDown, ChevronUp, Blocks, Hash, Vote, Key, Server, ArrowRight, Target, Lightbulb, BookOpen, Award } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface FAQItem {

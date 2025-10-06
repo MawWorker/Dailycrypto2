@@ -5,45 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { 
-  ShoppingCart,
-  Smartphone,
-  Building2,
-  CreditCard,
-  Shield,
-  CheckCircle,
-  AlertTriangle,
-  Info,
-  Star,
-  Banknote,
-  Users,
-  Clock,
-  Eye,
-  Wallet,
-  ArrowRightLeft,
-  FileText,
-  Lock,
-  Globe,
-  Zap,
-  Target,
-  Award,
-  ChevronDown,
-  ChevronUp,
-  ChevronRight,
-  ExternalLink,
-  Download,
-  Upload,
-  DollarSign,
-  Percent,
-  Timer,
-  UserCheck,
-  Camera,
-  Mail,
-  Phone,
-  MapPin,
-  CreditCard as CardIcon,
-  Landmark
-} from 'lucide-react';
+import { ShoppingCart, Smartphone, Building2, CreditCard, Shield, CircleCheck as CheckCircle, TriangleAlert as AlertTriangle, Info, Star, Banknote, Users, Clock, Eye, Wallet, ArrowRightLeft, FileText, Lock, Globe, Zap, Target, Award, ChevronDown, ChevronUp, ChevronRight, ExternalLink, Download, Upload, DollarSign, Percent, Timer, UserCheck, Camera, Mail, Phone, MapPin, CreditCard as CardIcon, Landmark } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface Platform {

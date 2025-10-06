@@ -43,7 +43,8 @@ const NAV_ITEMS = [
     link: "/markets",
     dropdown: [
       { name: "Market Overview", link: "/markets/overview" },
-      { name: "Live Prices", link: "/prices" }
+      { name: "Live Prices", link: "/prices" },
+      { name: "Market Outlook", link: "/daily/outlook" }
     ]
   },
   {
@@ -52,8 +53,7 @@ const NAV_ITEMS = [
     dropdown: [
       { name: "Today's Recap", link: "/daily/today" },
       { name: "Weekly Summary", link: "/daily/weekly" },
-      { name: "Archives", link: "/daily/archives" },
-      { name: "Market Outlook", link: "/daily/outlook" }
+      { name: "Archives", link: "/daily/archives" }
     ]
   },
   { 

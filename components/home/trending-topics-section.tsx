@@ -22,6 +22,8 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useCryptoPrices } from '@/hooks/use-crypto-prices';
+import { getNewsPosts, SanityNewsPost, getImageUrl } from '@/lib/sanity';
+import { formatDistanceToNow } from 'date-fns';
 
 // Live Prices Widget Component
 const LivePricesWidget = () => {
@@ -186,88 +188,7 @@ const trendingTopics = [
   }
 ];
 
-const philippinesNewsArticles = [
-  {
-    id: 1,
-    title: 'BSP Launches Digital Peso Pilot with 50,000 Users',
-    summary: 'Central bank begins comprehensive CBDC testing across Metro Manila',
-    category: 'CBDC',
-    timeAgo: '2h ago',
-    image: 'https://images.unsplash.com/photo-1680499661732-3cfae4690e1c?q=80&w=735&auto=format&fit=crop',
-    categoryColor: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300',
-    link: '/news/bsp-digital-peso-pilot-launch'
-  },
-  {
-    id: 2,
-    title: 'GCash & Maya Expand Crypto Trading Features',
-    summary: 'Popular e-wallets add new trading pairs and lower fees',
-    category: 'Fintech',
-    timeAgo: '4h ago',
-    image: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=800&q=80',
-    categoryColor: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300',
-    link: '/news/gcash-maya-crypto-expansion'
-  },
-  {
-    id: 3,
-    title: 'Major PH Banks Test Blockchain Remittance',
-    summary: 'BDO, BPI pilot program could reduce OFW transfer costs by 60%',
-    category: 'Banking',
-    timeAgo: '6h ago',
-    image: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=800&q=80',
-    categoryColor: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300',
-    link: '/news/philippine-banks-blockchain-remittance'
-  },
-  {
-    id: 4,
-    title: 'BIR Updates Crypto Tax Guidelines for 2025',
-    summary: 'New framework provides clarity for Filipino crypto traders',
-    category: 'Tax',
-    timeAgo: '8h ago',
-    image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=800&q=80',
-    categoryColor: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300',
-    link: '/news/bir-crypto-tax-guidelines-2025'
-  },
-  {
-    id: 5,
-    title: 'PH Exchanges Boost Security Measures',
-    summary: 'Coins.ph, PDAX implement advanced protection protocols',
-    category: 'Security',
-    timeAgo: '10h ago',
-    image: 'https://images.unsplash.com/photo-1563013544-824ae1b704d3?auto=format&fit=crop&w=800&q=80',
-    categoryColor: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300',
-    link: '/news/philippine-crypto-exchanges-security'
-  },
-  {
-    id: 6,
-    title: 'Filipino Artists Embrace Solana NFTs',
-    summary: 'Local creators gain international recognition on blockchain',
-    category: 'NFT',
-    timeAgo: '12h ago',
-    image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80',
-    categoryColor: 'bg-pink-100 text-pink-700 dark:bg-pink-900/30 dark:text-pink-300',
-    link: '/news/filipino-artists-solana-nft'
-  },
-  {
-    id: 7,
-    title: 'Philippine SMEs Adopt Bitcoin Payments',
-    summary: 'Small businesses leverage crypto for cross-border transactions',
-    category: 'Business',
-    timeAgo: '14h ago',
-    image: 'https://images.unsplash.com/photo-1518546305927-5a555bb7020d?auto=format&fit=crop&w=800&q=80',
-    categoryColor: 'bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-300',
-    link: '/news/philippine-smes-bitcoin-adoption'
-  },
-  {
-    id: 8,
-    title: 'Cardano Partners with PH Universities',
-    summary: 'Blockchain education initiative trains Filipino developers',
-    category: 'Education',
-    timeAgo: '16h ago',
-    image: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=800&q=80',
-    categoryColor: 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300',
-    link: '/news/cardano-philippine-universities'
-  }
-];
+// Will be fetched from Sanity
 
 const quickLinks = [
   { name: 'Market Overview', href: '/markets/overview', icon: BarChart3 },
@@ -278,17 +199,48 @@ const quickLinks = [
 
 export function TrendingTopicsSection() {
   const [currentTime, setCurrentTime] = useState<string>('');
+  const [sanityArticles, setSanityArticles] = useState<SanityNewsPost[]>([]);
+  const [articlesLoading, setArticlesLoading] = useState(true);
 
   useEffect(() => {
     const updateTime = () => {
       setCurrentTime(new Date().toLocaleTimeString('en-PH', { timeZone: 'Asia/Manila' }));
     };
-    
+
     updateTime();
     const interval = setInterval(updateTime, 1000);
-    
+
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    const fetchArticles = async () => {
+      try {
+        const posts = await getNewsPosts(8);
+        setSanityArticles(posts);
+      } catch (error) {
+        console.warn('Failed to fetch articles:', error);
+        setSanityArticles([]);
+      } finally {
+        setArticlesLoading(false);
+      }
+    };
+    fetchArticles();
+  }, []);
+
+  const getCategoryColor = (category: string) => {
+    const colors: Record<string, string> = {
+      'CBDC': 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300',
+      'Fintech': 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300',
+      'Banking': 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300',
+      'Tax': 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300',
+      'Security': 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300',
+      'NFT': 'bg-pink-100 text-pink-700 dark:bg-pink-900/30 dark:text-pink-300',
+      'Business': 'bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-300',
+      'Education': 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300',
+    };
+    return colors[category] || 'bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-300';
+  };
 
   return (
     <div className="container mx-auto px-4 sm:px-6 max-w-7xl">
@@ -308,50 +260,71 @@ export function TrendingTopicsSection() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-3">
-                {philippinesNewsArticles.map((article, index) => (
-                  <Link key={article.id} href={article.link}>
-                    <div className="group flex space-x-4 p-4 rounded-xl hover:bg-[var(--color-muted-subtle)] transition-all duration-200 cursor-pointer hover:shadow-sm">
-                      {/* Article Image */}
-                      <div className="relative w-20 h-16 flex-shrink-0 overflow-hidden rounded-lg shadow-sm">
-                        <img
-                          src={article.image}
-                          alt={article.title}
-                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 rounded-xl"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
-                        
-                        {/* Article Number Badge */}
-                        <div className="absolute top-1 left-1">
-                          <div className="w-5 h-5 bg-gradient-to-r from-red-500 to-pink-600 text-white rounded-md flex items-center justify-center font-bold text-xs shadow-sm">
-                            {index + 1}
-                          </div>
+              {articlesLoading ? (
+                <div className="space-y-3">
+                  {Array.from({ length: 4 }).map((_, i) => (
+                    <div key={i} className="p-4 rounded-xl bg-[var(--color-muted-subtle)] animate-pulse">
+                      <div className="flex space-x-4">
+                        <div className="w-20 h-16 bg-gray-300 dark:bg-gray-600 rounded-lg" />
+                        <div className="flex-1 space-y-2">
+                          <div className="h-4 bg-gray-300 dark:bg-gray-600 rounded w-3/4" />
+                          <div className="h-3 bg-gray-300 dark:bg-gray-600 rounded w-full" />
+                          <div className="h-3 bg-gray-300 dark:bg-gray-600 rounded w-1/2" />
                         </div>
-                      </div>
-
-                      {/* Article Content */}
-                      <div className="flex-1 min-w-0 space-y-2">
-                        <div className="flex items-center space-x-2">
-                          <Badge className={`text-xs ${article.categoryColor}`}>
-                            {article.category}
-                          </Badge>
-                          <span className="text-xs text-[var(--color-text-secondary)]">
-                            {article.timeAgo}
-                          </span>
-                        </div>
-                        
-                        <h4 className="font-semibold text-sm line-clamp-2 group-hover:text-[var(--color-primary-brand)] transition-colors leading-tight">
-                          {article.title}
-                        </h4>
-                        
-                        <p className="text-xs text-[var(--color-text-secondary)] line-clamp-2 leading-relaxed">
-                          {article.summary}
-                        </p>
                       </div>
                     </div>
-                  </Link>
-                ))}
-              </div>
+                  ))}
+                </div>
+              ) : sanityArticles.length === 0 ? (
+                <div className="text-center py-12">
+                  <p className="text-[var(--color-text-secondary)] text-sm">No articles available. Create some in Sanity CMS!</p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {sanityArticles.map((article, index) => (
+                    <Link key={article._id} href={`/news/${article.slug?.current}`}>
+                      <div className="group flex space-x-4 p-4 rounded-xl hover:bg-[var(--color-muted-subtle)] transition-all duration-200 cursor-pointer hover:shadow-sm">
+                        {/* Article Image */}
+                        <div className="relative w-20 h-16 flex-shrink-0 overflow-hidden rounded-lg shadow-sm">
+                          <img
+                            src={article.coverImage ? getImageUrl(article.coverImage, 320, 240) : 'https://images.pexels.com/photos/1181677/pexels-photo-1181677.jpeg?auto=compress&cs=tinysrgb&w=320'}
+                            alt={article.title}
+                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 rounded-xl"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+
+                          {/* Article Number Badge */}
+                          <div className="absolute top-1 left-1">
+                            <div className="w-5 h-5 bg-gradient-to-r from-red-500 to-pink-600 text-white rounded-md flex items-center justify-center font-bold text-xs shadow-sm">
+                              {index + 1}
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Article Content */}
+                        <div className="flex-1 min-w-0 space-y-2">
+                          <div className="flex items-center space-x-2">
+                            <Badge className={`text-xs ${getCategoryColor(article.category?.name || 'News')}`}>
+                              {article.category?.name || 'News'}
+                            </Badge>
+                            <span className="text-xs text-[var(--color-text-secondary)]">
+                              {formatDistanceToNow(new Date(article.datePublished), { addSuffix: true })}
+                            </span>
+                          </div>
+
+                          <h4 className="font-semibold text-sm line-clamp-2 group-hover:text-[var(--color-primary-brand)] transition-colors leading-tight">
+                            {article.title}
+                          </h4>
+
+                          <p className="text-xs text-[var(--color-text-secondary)] line-clamp-2 leading-relaxed">
+                            {article.description}
+                          </p>
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              )}
               
               <div className="mt-6 pt-4 border-t border-[var(--color-muted-subtle)] text-center">
                 <Button 

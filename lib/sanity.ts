@@ -7,12 +7,21 @@ import { SanityImageSource } from '@sanity/image-url/lib/types/types'
  *  Make sure these env vars match the Project ID and Dataset
  *  from https://sanity.io/manage
  */
+const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || 'uiu9mgqs'
+const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET || 'production'
+const apiVersion = process.env.NEXT_PUBLIC_SANITY_API_VERSION || '2024-01-01'
+const token = process.env.SANITY_API_READ_TOKEN
+
+if (typeof window !== 'undefined') {
+  console.log('[Sanity Client] Configuration:', { projectId, dataset, apiVersion, hasToken: !!token })
+}
+
 export const client = createClient({
-  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || 'uiu9mgqs',
-  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || 'production',
-  apiVersion: process.env.NEXT_PUBLIC_SANITY_API_VERSION || '2024-01-01',
+  projectId,
+  dataset,
+  apiVersion,
   useCdn: true,
-  token: process.env.SANITY_API_READ_TOKEN || undefined,
+  token,
 })
 
 // ---------- Image Helpers ----------
@@ -124,18 +133,36 @@ export async function getNewsPosts(
   limit: number = 50,
   featured?: boolean
 ): Promise<SanityNewsPost[]> {
-  const featuredFilter = featured ? ' && featured == true' : ''
-  const query = `*[_type == "newsPost"${featuredFilter}]
-                | order(datePublished desc)[0...${limit}] {${newsPostFields}}`
-  return (await client.fetch(query)) || []
+  try {
+    const featuredFilter = featured ? ' && featured == true' : ''
+    const query = `*[_type == "newsPost"${featuredFilter}]
+                  | order(datePublished desc)[0...${limit}] {${newsPostFields}}`
+    const result = await client.fetch(query)
+    if (typeof window !== 'undefined') {
+      console.log('[Sanity] getNewsPosts returned', result?.length || 0, 'posts')
+    }
+    return result || []
+  } catch (error) {
+    console.error('[Sanity] Error fetching news posts:', error)
+    throw error
+  }
 }
 
 export async function getLatestNewsPosts(
   limit: number = 23
 ): Promise<SanityNewsPost[]> {
-  const query = `*[_type == "newsPost"]
-                | order(datePublished desc)[0...${limit}] {${newsPostFields}}`
-  return (await client.fetch(query)) || []
+  try {
+    const query = `*[_type == "newsPost"]
+                  | order(datePublished desc)[0...${limit}] {${newsPostFields}}`
+    const result = await client.fetch(query)
+    if (typeof window !== 'undefined') {
+      console.log('[Sanity] getLatestNewsPosts returned', result?.length || 0, 'posts')
+    }
+    return result || []
+  } catch (error) {
+    console.error('[Sanity] Error fetching latest news posts:', error)
+    throw error
+  }
 }
 
 export async function getNewsPostBySlug(

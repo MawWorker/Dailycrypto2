@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import VisualEditsMessenger from "../visual-edits/VisualEditsMessenger";
 import ErrorReporter from "@/components/ErrorReporter";
 import { ScrollToTopProvider } from "@/components/layout/scroll-to-top-provider";
 import Script from "next/script";
@@ -32,7 +31,6 @@ export default function RootLayout({
         <ScrollToTopProvider enabled={true} threshold={300} showProgress={false}>
           {children}
         </ScrollToTopProvider>
-        <VisualEditsMessenger />
       </body>
     </html>
   );

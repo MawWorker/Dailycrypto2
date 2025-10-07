@@ -11,7 +11,8 @@ export const client = createClient({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || 'uiu9mqgs',
   dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || 'production',
   apiVersion: '2024-01-01',
-  useCdn: true,
+  useCdn: false,
+  token: process.env.NEXT_PUBLIC_SANITY_API_TOKEN || undefined,
 })
 
 // ---------- Image Helpers ----------
